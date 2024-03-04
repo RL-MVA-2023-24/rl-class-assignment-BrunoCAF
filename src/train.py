@@ -46,14 +46,14 @@ class ProjectAgent:
 
         config = {'nb_actions': env.action_space.n,
                 'learning_rate': 5e-3,
-                'gamma': 0.8,
+                'gamma': 0.5,
                 'buffer_size': 1000000,
                 'epsilon_min': 0.01,
                 'epsilon_max': 1.,
                 'epsilon_decay_period': 10000,
                 'epsilon_delay_decay': 500,
-                'batch_size': 10,
-                'gradient_steps': 5,
+                'batch_size': 50,
+                'gradient_steps': 1,
                 'update_target_strategy': 'replace',
                 'update_target_freq': 10,
                 'update_target_tau': 0.05,
@@ -91,7 +91,7 @@ class ProjectAgent:
         self.criterion = config['criterion'] if 'criterion' in config.keys() else torch.nn.MSELoss()
         lr = config['learning_rate'] if 'learning_rate' in config.keys() else 0.001
         self.optimizer = config['optimizer'] if 'optimizer' in config.keys() else torch.optim.Adam(self.model.parameters(), lr=lr)
-        self.scheduler = StepLR(self.optimizer, step_size=5000, gamma=0.5)
+        self.scheduler = StepLR(self.optimizer, step_size=5000, gamma=0.8)
         self.nb_gradient_steps = config['gradient_steps'] if 'gradient_steps' in config.keys() else 1
         self.update_target_strategy = config['update_target_strategy'] if 'update_target_strategy' in config.keys() else 'replace'
         self.update_target_freq = config['update_target_freq'] if 'update_target_freq' in config.keys() else 20
@@ -286,8 +286,6 @@ if __name__ == '__main__':
     print("Saving model")
     agent.save(agent.path)
     print("Done")
-
-
 
 
 
